@@ -30,7 +30,7 @@
         <main class="py-3">
             <div class="container">
                 <div class="jumbotron">
-                    <h1 class="text-center">Bucket Ball Assignment App</h1>
+                    <h1 class="text-center">Bucket Ball Assignment App 🏀🪣</h1>
                     <div class="row">
                         @yield('content')
                     </div>

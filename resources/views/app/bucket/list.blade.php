@@ -1,6 +1,6 @@
 <div class="col-md-6 py-3">
     <div class="card">
-        <div class="card-header">{{ __('Bucket List') }}</div>
+        <div class="card-header">{{ __('🪣 Bucket List') }}</div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-borderd">

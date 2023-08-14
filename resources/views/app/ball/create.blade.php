@@ -1,6 +1,6 @@
 <div class="col-md-6">
     <div class="card">
-        <div class="card-header">{{ __('Ball Form') }}</div>
+        <div class="card-header">{{ __('🏀 Ball Form') }}</div>
         <div class="card-body">
 
             <form method="POST" action="{{ route('balls.store') }}">

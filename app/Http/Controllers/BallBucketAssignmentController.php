@@ -19,10 +19,13 @@ class BallBucketAssignmentController extends Controller
         $balls = Ball::get()->keyBy('id');
 
         // Retrieve buckets with adjusted capacity
-        $buckets = Bucket::with('assignments')
+        $buckets = Bucket::withSum('assignments', 'occupied_capacity')->get();
+
+        // Retrieve buckets with adjusted capacity
+        $buckets = Bucket::withSum('assignments', 'occupied_capacity')
             ->get()
             ->each(function (Bucket $bucket) {
-                $bucket->capacity -= $bucket->assignments->sum('occupied_capacity');
+                $bucket->capacity -= $bucket->assignments_sum_occupied_capacity ?? 0;
             })
             ->where('capacity', '>', 0)
             ->sortByDesc('capacity');
@@ -69,6 +72,6 @@ class BallBucketAssignmentController extends Controller
         // Insert the assignment data into the database
         BallBucketAssignment::insert($ballBucketAssignment);
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success', 'Bucket Assigned successfully');
     }
 }
