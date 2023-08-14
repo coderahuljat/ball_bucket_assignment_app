@@ -4,19 +4,18 @@ Please let me know your feedback and comments. 📝🤝
 
 **Laravel 10.x requires a minimum PHP version of 8.1.** for more information visit - https://laravel.com/docs/10.x/releases 🚀📚
 
-For additional demo data you may use the following command. By using this you can update the `posts`, `setting`, and `user` table and insert new demo data. The `--fresh` option will truncate the tables; without this command, new set to data will be inserted only. 💡📊
 
 ### Installation Instructions 🛠️
 
-Run
-
-```bash
-https://github.com/coderahuljat/ball_bucket_assignment_app.git
+Run bash
 
 ```
+https://github.com/coderahuljat/ball_bucket_assignment_app.git
+```
 
+
+```
 cd ball_bucket_assignment_app
-
 ```
 
 ```
