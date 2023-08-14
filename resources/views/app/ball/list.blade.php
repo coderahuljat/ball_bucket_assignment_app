@@ -1,6 +1,6 @@
 <div class="col-md-6 py-3">
     <div class="card">
-        <div class="card-header">{{ __('🪣 Ball List') }}</div>
+        <div class="card-header">{{ __('🏀 Ball List') }}</div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-borderd">
@@ -21,7 +21,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>        
+            </div>
         </div>
     </div>
 </div>
