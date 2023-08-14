@@ -15,8 +15,8 @@ class BallBucketAssignmentController extends Controller
         // Validated input data from the request
         $data = $request->validated();
 
-        // Retrieve ball and bucket data
-        $balls = Ball::find(array_keys($data['ball_ids']))->keyBy('id');
+        // Retrieve all balls
+        $balls = Ball::get()->keyBy('id');
 
         // Retrieve buckets with adjusted capacity
         $buckets = Bucket::with('assignments')
@@ -37,44 +37,29 @@ class BallBucketAssignmentController extends Controller
         // Assign balls to buckets
         foreach ($data['ball_ids'] as $ball_id => $quantity) {
             if ($quantity > 0) {
-                $requiredCapacity = $balls[$ball_id]->size * $quantity;
 
-                // Find a bucket that can accommodate the ball
-                $bucket = $buckets->where('capacity', '>=', $requiredCapacity)->first();
+                // Distribute the ball across multiple buckets
+                foreach ($buckets as $bucket) {
+                    $remainingCapacity = $bucket->capacity;
 
-                if (isset($bucket)) {
-                    // Assign the ball to the bucket
-                    $ballBucketAssignment[] = [
-                        'ball_id' => $ball_id,
-                        'bucket_id' => $bucket->id,
-                        'no_of_ball' => $quantity,
-                        'occupied_capacity' => $requiredCapacity,
-                    ];
-                    $bucket->capacity -= $requiredCapacity;
-                } else {
-                    // Distribute the ball across multiple buckets
-                    foreach ($buckets as $bucket) {
-                        $remainingCapacity = $bucket->capacity;
+                    if ($remainingCapacity > 0) {
+                        $ballsToAssign = min($quantity, floor($remainingCapacity / $balls[$ball_id]->size));
+                        $requiredCapacity = $balls[$ball_id]->size * $ballsToAssign;
 
-                        if ($remainingCapacity > 0) {
-                            $ballsToAssign = min($quantity, floor($remainingCapacity / $balls[$ball_id]->size));
-                            $requiredCapacity = $balls[$ball_id]->size * $ballsToAssign;
+                        if ($ballsToAssign > 0) {
+                            $ballBucketAssignment[] = [
+                                'ball_id' => $ball_id,
+                                'bucket_id' => $bucket->id,
+                                'no_of_ball' => $ballsToAssign,
+                                'occupied_capacity' => $requiredCapacity,
+                            ];
+                        }
 
-                            if ($ballsToAssign > 0) {
-                                $ballBucketAssignment[] = [
-                                    'ball_id' => $ball_id,
-                                    'bucket_id' => $bucket->id,
-                                    'no_of_ball' => $ballsToAssign,
-                                    'occupied_capacity' => $requiredCapacity,
-                                ];
-                            }
+                        $bucket->capacity -= $requiredCapacity;
+                        $quantity -= $ballsToAssign;
 
-                            $bucket->capacity -= $requiredCapacity;
-                            $quantity -= $ballsToAssign;
-
-                            if ($quantity <= 0) {
-                                break; // All balls have been assigned
-                            }
+                        if ($quantity <= 0) {
+                            break; // All balls have been assigned
                         }
                     }
                 }
