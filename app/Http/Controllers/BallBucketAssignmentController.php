@@ -25,9 +25,9 @@ class BallBucketAssignmentController extends Controller
         $buckets = Bucket::withSum('assignments', 'occupied_capacity')
             ->get()
             ->each(function (Bucket $bucket) {
-                $bucket->capacity -= $bucket->assignments_sum_occupied_capacity ?? 0;
+                $bucket->remaining_capacity = $bucket->capacity - ($bucket->assignments_sum_occupied_capacity ?? 0);
             })
-            ->where('capacity', '>', 0)
+            ->where('remaining_capacity', '>', 0)
             ->sortByDesc('capacity');
 
         // If no buckets can accommodate balls, redirect with error message
@@ -43,7 +43,7 @@ class BallBucketAssignmentController extends Controller
 
                 // Distribute the ball across multiple buckets
                 foreach ($buckets as $bucket) {
-                    $remainingCapacity = $bucket->capacity;
+                    $remainingCapacity = $bucket->remaining_capacity;
 
                     if ($remainingCapacity > 0) {
                         $ballsToAssign = min($quantity, floor($remainingCapacity / $balls[$ball_id]->size));
@@ -58,7 +58,7 @@ class BallBucketAssignmentController extends Controller
                             ];
                         }
 
-                        $bucket->capacity -= $requiredCapacity;
+                        $bucket->remaining_capacity -= $requiredCapacity;
                         $quantity -= $ballsToAssign;
 
                         if ($quantity <= 0) {
